@@ -1,3 +1,8 @@
+/**
+ * List of all currencies that we're
+ * using in app
+ */
+
 const List<String> currenciesList = [
   'AUD',
   'BRL',
