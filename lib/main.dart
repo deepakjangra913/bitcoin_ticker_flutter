@@ -4,14 +4,17 @@ import 'package:flutter/material.dart';
 // Entry point for
 void main() => runApp(MyApp());
 
-/**/
+/**
+ * This is the main entry of this app
+ * */
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark().copyWith(
-          primaryColor: Colors.lightBlue,
-          scaffoldBackgroundColor: Colors.white),
+        primaryColor: Colors.lightBlue,
+        scaffoldBackgroundColor: Colors.white,
+      ),
       home: PriceScreen(),
     );
   }
