@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:bitcoin_ticker_flutter/coin_data.dart';
+import 'package:bitcoin_ticker_flutter/utils%20/NetworkHelper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,13 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = currenciesList.first;
+  int conversionPrice = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getConversionPrice(selectedCurrency);
+  }
 
   DropdownButton<String> androidDropdown() {
     List<DropdownMenuItem<String>> dropDownItems = [];
@@ -26,9 +34,20 @@ class _PriceScreenState extends State<PriceScreen> {
         setState(() {
           selectedCurrency = value ?? '';
         });
+        getConversionPrice(selectedCurrency);
       },
     );
   }
+
+  void getConversionPrice(String selectedCurrency) async {
+    String url = 'https://api.coingecko.com/api/v3/simple/price?vs_currencies=$selectedCurrency&ids=bitcoin';
+    NetworkHelper networkHelper = NetworkHelper(url);
+    var data = await networkHelper.getData();
+    var price = data['bitcoin'][selectedCurrency.toLowerCase()];
+    setState(() {
+      conversionPrice = price;
+    });
+}
 
   CupertinoPicker iOSPicker() {
     List<Widget> pickerItems = [];
@@ -40,7 +59,10 @@ class _PriceScreenState extends State<PriceScreen> {
     return CupertinoPicker(
       itemExtent: 32.0,
       onSelectedItemChanged: (selectedIndex) {
-        selectedCurrency = currenciesList[selectedIndex];
+        setState(() {
+          selectedCurrency = currenciesList[selectedIndex];
+        });
+        getConversionPrice(selectedCurrency);
       },
       children: pickerItems,
     );
@@ -65,7 +87,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 BTC = $conversionPrice $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),

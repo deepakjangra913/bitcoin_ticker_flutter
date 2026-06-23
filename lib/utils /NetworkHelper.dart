@@ -1,5 +1,6 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 const apiKey = "CG-xpapGQdm4jbUwfviMx75wqd3";
 
@@ -9,7 +10,9 @@ class NetworkHelper {
   NetworkHelper(this.url);
 
   Future getData() async {
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(
+      Uri.parse('$url&x_cg_demo_api_key=$apiKey'),
+    );
 
     if (response.statusCode == 200) {
       String data = response.body;
