@@ -27,6 +27,10 @@ const List<String> currenciesList = [
   'ZAR',
 ];
 
-const List<String> cryptoList = ['BTC', 'ETH', 'LTC'];
+const Map<String, String> coinIds = {
+  'BTC': 'bitcoin',
+  'ETH': 'ethereum',
+  'LTC': 'litecoin',
+};
 
 class CoinData {}

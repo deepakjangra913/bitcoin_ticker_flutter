@@ -13,6 +13,7 @@ class PriceScreen extends StatefulWidget {
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = currenciesList.first;
   int conversionPrice = 0;
+  Map<String, dynamic> coinPrices = {};
 
   @override
   void initState() {
@@ -40,14 +41,15 @@ class _PriceScreenState extends State<PriceScreen> {
   }
 
   void getConversionPrice(String selectedCurrency) async {
-    String url = 'https://api.coingecko.com/api/v3/simple/price?vs_currencies=$selectedCurrency&ids=bitcoin';
+    String url =
+        'https://api.coingecko.com/api/v3/simple/price?vs_currencies=$selectedCurrency&ids=${coinIds.values.join(',')}';
     NetworkHelper networkHelper = NetworkHelper(url);
     var data = await networkHelper.getData();
-    var price = data['bitcoin'][selectedCurrency.toLowerCase()];
+    print('response: $data');
     setState(() {
-      conversionPrice = price;
+      coinPrices = data;
     });
-}
+  }
 
   CupertinoPicker iOSPicker() {
     List<Widget> pickerItems = [];
@@ -76,23 +78,10 @@ class _PriceScreenState extends State<PriceScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC = $conversionPrice $selectedCurrency',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
-                ),
-              ),
-            ),
+          Column(
+            children: coinIds.map((coin) {
+              return cryptoCard(coin);
+            }).toList(),
           ),
           Container(
             height: 150.0,
@@ -102,6 +91,28 @@ class _PriceScreenState extends State<PriceScreen> {
             child: Platform.isIOS ? iOSPicker() : androidDropdown(),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget cryptoCard(String coin) {
+    print('coin: $coin');
+    print('list: $coinPrices');
+    String coinId = coinIds[symbol];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 0),
+      child: Card(
+        color: Colors.lightBlueAccent,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 28),
+          child: Text(
+            '1 ${coin.toUpperCase()} = '
+            '${coinPrices[coin]?[selectedCurrency.toLowerCase()] ?? '?'} '
+            '$selectedCurrency',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20, color: Colors.white),
+          ),
+        ),
       ),
     );
   }
