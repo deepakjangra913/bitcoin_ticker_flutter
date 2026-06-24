@@ -79,7 +79,7 @@ class _PriceScreenState extends State<PriceScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Column(
-            children: coinIds.map((coin) {
+            children: coinIds.values.map((coin) {
               return cryptoCard(coin);
             }).toList(),
           ),
@@ -96,9 +96,6 @@ class _PriceScreenState extends State<PriceScreen> {
   }
 
   Widget cryptoCard(String coin) {
-    print('coin: $coin');
-    print('list: $coinPrices');
-    String coinId = coinIds[symbol];
     return Padding(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 0),
       child: Card(

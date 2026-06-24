@@ -31,6 +31,8 @@ const Map<String, String> coinIds = {
   'BTC': 'bitcoin',
   'ETH': 'ethereum',
   'LTC': 'litecoin',
+  'DOGE': 'dogecoin',
+  'SOL': 'solana',
 };
 
 class CoinData {}
